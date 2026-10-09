@@ -1,41 +1,32 @@
 # Quản lý Tiến độ & Chi phí Công trình
 
-Ứng dụng demo chạy trên Google Apps Script, dùng Google Sheets để lưu dữ liệu và Google Drive để lưu ảnh.
+Bản demo tĩnh dành cho khách hàng, chạy hoàn toàn bằng HTML, CSS và JavaScript trên GitHub Pages.
 
-## Khởi tạo với clasp
+## Chạy tại máy
 
-1. Cài `clasp`:
+```bash
+python3 -m http.server 8080
+```
 
-   ```bash
-   npm i -g @google/clasp
-   ```
+Mở `http://localhost:8080`.
 
-2. Đăng nhập tài khoản Google:
+## Dữ liệu demo
 
-   ```bash
-   clasp login
-   ```
+- Dữ liệu được tạo tự động trong trình duyệt và lưu bằng `localStorage`.
+- Có thể nhập báo cáo, duyệt báo cáo, nhập chi phí, import dự toán và chỉnh danh mục.
+- Nút **Tạo lại dữ liệu mẫu** ở trang Danh mục khôi phục trạng thái ban đầu.
+- Đây là bản demo không có đăng nhập và không dùng cơ sở dữ liệu thật.
 
-3. Tạo Apps Script gắn với một Google Sheet mới (chạy tại thư mục gốc của repo):
+## Deploy GitHub Pages
 
-   ```bash
-   clasp create --type sheets --title "Quản lý Công trình" --rootDir src
-   ```
+Trong repository GitHub, mở **Settings → Pages**, chọn **Deploy from a branch**, sau đó chọn nhánh `main` và thư mục `/ (root)`.
 
-   Lệnh này tạo file `.clasp.json` chứa `scriptId`. Không commit `scriptId` nếu dự án dùng repo công khai.
+Các file dùng để deploy:
 
-4. Đẩy mã nguồn lên Apps Script:
+- `index.html`
+- `styles.css`
+- `app.js`
+- `demo-api.js`
+- `og-cover.png`
 
-   ```bash
-   clasp push
-   ```
-
-5. Mở Google Sheet vừa tạo, tải lại trang rồi chọn menu **🏗 Công trình → Khởi tạo các tab**.
-
-6. Deploy Web App:
-
-   ```bash
-   clasp deploy
-   ```
-
-Trong Apps Script, có thể chạy hàm `test_Db` để kiểm tra chuỗi thao tác thêm → tìm → sửa → xoá.
+Trang public: <https://dannguyen2299.github.io/tien-do-cong-trinh/>
