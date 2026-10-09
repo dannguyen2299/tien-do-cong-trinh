@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8">
+    <base target="_top">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <?!= include('Styles'); ?>
+  </head>
+  <body x-data="constructionApp()" x-init="init()" @hashchange.window="onRoute()" x-cloak>
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">🏗</span><div><strong x-text="companyName"></strong><small>Quản lý tiến độ & chi phí</small></div></div>
+      <label class="role-picker">Xem với vai trò
+        <select x-model="role" @change="changeRole()">
+          <template x-for="item in roleOptions" :key="item.value"><option :value="item.value" x-text="item.label"></option></template>
+        </select>
+      </label>
+      <div class="user"><span x-text="userName"></span><small x-text="roleLabel"></small></div>
+    </header>
+    <div class="shell">
+      <aside class="sidebar">
+        <template x-for="item in navigation" :key="item.hash">
+          <a x-show="can(item.permission)" :href="item.hash" :class="{active: route.startsWith(item.route)}"><span x-text="item.icon"></span><span x-text="item.label"></span></a>
+        </template>
+      </aside>
+      <main class="content">
+        <div class="loading" x-show="loading"><span class="spinner"></span>Đang tải dữ liệu…</div>
+        <?!= include('views/Dashboard'); ?>
+        <?!= include('views/Projects'); ?>
+        <?!= include('views/ProjectDetail'); ?>
+        <?!= include('views/ReportForm'); ?>
+        <?!= include('views/Approvals'); ?>
+        <?!= include('views/Costs'); ?>
+        <?!= include('views/BudgetImport'); ?>
+        <?!= include('views/Catalog'); ?>
+      </main>
+    </div>
+    <nav class="mobile-nav">
+      <a href="#/dashboard"><span>⌂</span>Tổng quan</a><a href="#/projects"><span>▤</span>Công trình</a>
+      <a href="#/report/new" class="report-action" x-show="can('report.create')"><span>＋</span>Báo cáo</a>
+      <a href="#/approvals" x-show="can('report.review')"><span>✓</span>Duyệt</a><button @click="moreOpen=!moreOpen"><span>•••</span>Thêm</button>
+      <div class="more-menu" x-show="moreOpen" @click.outside="moreOpen=false">
+        <a href="#/costs" x-show="can('cost.create') || can('money.view')">Chi phí</a>
+        <a href="#/budget" x-show="can('budget.import')">Dự toán</a>
+        <a href="#/catalog" x-show="can('catalog.manage')">Danh mục</a>
+      </div>
+    </nav>
+    <div class="toast" x-show="toast.show" :class="toast.type" x-transition x-text="toast.message"></div>
+    <div class="modal-backdrop" x-show="dialog.show" @keydown.escape.window="closeDialog(false)">
+      <div class="dialog" @click.stop><h3 x-text="dialog.title"></h3><p x-text="dialog.message"></p><textarea x-show="dialog.input" x-model="dialog.value" placeholder="Nhập lý do…"></textarea>
+        <div class="actions"><button class="btn ghost" @click="closeDialog(false)">Huỷ</button><button class="btn danger" @click="closeDialog(true)">Xác nhận</button></div>
+      </div>
+    </div>
+    <?!= include('App'); ?>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  </body>
+</html>

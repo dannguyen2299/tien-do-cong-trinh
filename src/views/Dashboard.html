@@ -1,0 +1,16 @@
+<section x-show="route==='/dashboard'">
+  <div class="page-header"><div><h1>Tổng quan</h1><p>Tình hình tiến độ và chi phí các công trình</p></div><button class="btn ghost" @click="loadDashboard()">↻ Làm mới</button></div>
+  <div class="kpi-grid" x-show="dashboard">
+    <div class="kpi"><small>Công trình đang thi công</small><strong x-text="dashboard?.kpis.congTrinhDangThiCong||0"></strong></div>
+    <div class="kpi"><small>Tiến độ trung bình</small><strong x-text="formatNumber(dashboard?.kpis.tienDoTrungBinh)+'%' "></strong></div>
+    <div class="kpi" x-show="can('money.view')"><small>Tổng dự toán</small><strong x-text="formatCompact(dashboard?.kpis.duToan)"></strong></div>
+    <div class="kpi" x-show="can('money.view')"><small>Tổng thực chi</small><strong x-text="formatCompact(dashboard?.kpis.thucChi)"></strong><small x-text="formatNumber(dashboard?.kpis.ptChi)+'% dự toán'"></small></div>
+    <div class="kpi"><small>Báo cáo chờ duyệt</small><strong x-text="dashboard?.kpis.baoCaoChoDuyet||0"></strong></div>
+    <div class="kpi"><small>Hạng mục chậm / quá hạn</small><strong x-text="dashboard?.kpis.hangMucCham||0"></strong></div>
+  </div>
+  <div class="card"><h2>Các công trình</h2><div class="table-wrap"><table class="data-table"><thead><tr><th>Tên</th><th>CHT</th><th class="num">Kế hoạch</th><th>Thực tế</th><th>Tiến độ</th><th x-show="can('money.view')" class="num">Chi phí</th><th x-show="can('money.view')">Ngân sách</th></tr></thead><tbody>
+    <template x-for="p in dashboard?.projects||[]" :key="p.id"><tr class="clickable" @click="go('/project/'+p.id)"><td><strong x-text="p.ten"></strong><small class="meta" x-text="p.diaDiem"></small></td><td x-text="p.chiHuyTruong"></td><td class="num" x-text="formatNumber(p.ptKeHoach)+'%'"></td><td><div class="progress"><span :style="`width:${p.ptThucTe}%`"></span><i :style="`left:${p.ptKeHoach}%`"></i></div><small x-text="formatNumber(p.ptThucTe)+'%'"></small></td><td><span class="badge" :class="p.trangThaiTienDo.color" x-text="p.trangThaiTienDo.label"></span></td><td x-show="can('money.view')" class="num" x-text="p.ptChi===null?'—':formatNumber(p.ptChi)+'%'"></td><td x-show="can('money.view')"><span class="badge" :class="p.trangThaiChiPhi?.color" x-text="p.trangThaiChiPhi?.label"></span></td></tr></template>
+  </tbody></table></div></div>
+  <div class="grid-2"><div class="card"><h2>Kế hoạch và thực tế</h2><div class="chart-box"><canvas id="progressChart"></canvas></div></div><div class="card" x-show="can('money.view')"><h2>Dự toán và thực chi</h2><div class="chart-box"><canvas id="costChart"></canvas></div></div></div>
+  <div class="card"><h2>Cần chú ý</h2><template x-for="item in dashboard?.attention||[]" :key="item.type+item.congTrinhId+(item.hangMucId||'')"><div class="attention"><div><strong x-text="item.title"></strong><small class="meta" x-text="item.congTrinhTen||''"></small></div><span class="badge" :class="item.status.color" x-text="item.status.label"></span></div></template><div class="empty" x-show="!(dashboard?.attention||[]).length">Không có cảnh báo.</div></div>
+</section>
